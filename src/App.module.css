@@ -1,0 +1,13 @@
+.activeBtn,
+.disabledBtn {
+  padding: 10px 20px;
+  color: white;
+}
+
+.disabledBtn {
+  background-color: rgba(137, 43, 226, 0.7);
+}
+
+.activeBtn {
+  background-color: blueviolet;
+}

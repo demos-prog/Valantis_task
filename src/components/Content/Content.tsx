@@ -5,10 +5,15 @@ import css from "./Content.module.css";
 
 type ContentProps = {
   offset: number;
+  setOffset: (value: number) => void;
   setIsLoading: (value: boolean) => void;
 };
 
-const Content: React.FC<ContentProps> = ({ offset, setIsLoading }) => {
+const Content: React.FC<ContentProps> = ({
+  offset,
+  setOffset,
+  setIsLoading,
+}) => {
   const [IDs, setIDs] = useState([]);
   const [data, setData] = useState([]);
 
@@ -16,38 +21,42 @@ const Content: React.FC<ContentProps> = ({ offset, setIsLoading }) => {
     async (action: string, params: unknown) => {
       setIsLoading(true);
       const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-      const response = await fetch("https://api.valantis.store:41000/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Auth": md5(`Valantis_${timestamp}`),
-        },
-        body: JSON.stringify({
-          action: action,
-          params: params,
-        }),
-      });
-      return response;
+
+      try {
+        const response = await fetch("https://api.valantis.store:41000/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Auth": md5(`Valantis_${timestamp}`),
+          },
+          body: JSON.stringify({
+            action: action,
+            params: params,
+          }),
+        });
+        return response;
+      } catch (error) {
+        setOffset(offset + 50);
+        console.log("There was an error", error);
+      }
     },
-    [setIsLoading]
+    [offset, setIsLoading, setOffset]
   );
 
   useEffect(() => {
     getData("get_ids", { offset: offset, limit: 50 })
       .then(async (res) => {
-        const d = await res.json();
+        const d = await res?.json();
         setIDs(d.result);
       })
       .then(() => {
         getData("get_items", { ids: IDs }).then(async (res) => {
-          const d = await res.json();
+          const d = await res?.json();
           setData(d.result);
           setIsLoading(false);
         });
       });
   }, [IDs, getData, offset, setIsLoading]);
-
-  console.log(data);
 
   return (
     <div id={css.wrap}>

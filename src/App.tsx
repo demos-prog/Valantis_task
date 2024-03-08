@@ -10,22 +10,47 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
 
   const nextPage = () => {
-    setOffset(offset + 50);
+    setOffset((prev) => prev + 50);
   };
+
+  const handlePrev = () => {
+    if (offset >= 50) {
+      setOffset((prev) => prev - 50);
+    }
+  };
+
+  const isDisabledPrev = offset < 50 || isLoading;
 
   return (
     <>
+      <header>
+        <div id={css.paginWr}>
+          <button
+            disabled={isDisabledPrev}
+            className={isDisabledPrev ? css.disabledBtn : css.activeBtn}
+            type="button"
+            onClick={handlePrev}
+          >
+            Prev
+          </button>
+          <span>Page {offset / 50 + 1}</span>
+          <button
+            disabled={isLoading}
+            className={isLoading ? css.disabledBtn : css.activeBtn}
+            type="button"
+            onClick={nextPage}
+          >
+            Next
+          </button>
+        </div>
+      </header>
       <Suspense fallback={"Loading..."}>
-        <LazyContent offset={offset} setIsLoading={setIsLoading}/>
+        <LazyContent
+          offset={offset}
+          setOffset={setOffset}
+          setIsLoading={setIsLoading}
+        />
       </Suspense>
-      <button
-        disabled={isLoading}
-        className={isLoading ? css.disabledBtn : css.activeBtn}
-        type="button"
-        onClick={nextPage}
-      >
-        Next
-      </button>
     </>
   );
 }

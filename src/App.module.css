@@ -1,3 +1,14 @@
+header{
+  display: flex;
+  background: white;
+  padding: 10px;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
 .activeBtn,
 .disabledBtn {
   padding: 10px 20px;
@@ -5,9 +16,16 @@
 }
 
 .disabledBtn {
+  cursor: default;
   background-color: rgba(137, 43, 226, 0.7);
 }
 
 .activeBtn {
   background-color: blueviolet;
+}
+
+#paginWr{
+  align-items: center;
+  display: flex;
+  gap: 20px;
 }

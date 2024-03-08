@@ -1,5 +1,11 @@
-.productWrap{
+.productWrap {
+  width: 150px;
+  height: 220px;
+  overflow: hidden;
+  padding: 15px;
+  background-color: bisque;
   display: flex;
   flex-direction: column;
   gap: 15px;
+  border-radius: 5px;
 }

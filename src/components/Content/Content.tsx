@@ -1,17 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
 import md5 from "md5";
 import Product, { ProductType } from "../Product/Product.tsx";
+import loader from "../../assets/Eclipse-1s-200px.svg";
 import css from "./Content.module.css";
 
 type ContentProps = {
   offset: number;
   setOffset: (value: number) => void;
+  isLoading: boolean;
   setIsLoading: (value: boolean) => void;
 };
 
 const Content: React.FC<ContentProps> = ({
   offset,
   setOffset,
+  isLoading,
   setIsLoading,
 }) => {
   const [IDs, setIDs] = useState([]);
@@ -59,19 +62,26 @@ const Content: React.FC<ContentProps> = ({
   }, [IDs, getData, offset, setIsLoading]);
 
   return (
-    <div id={css.wrap}>
-      {data?.map((product: ProductType, i: number) => {
-        return (
-          <Product
-            brand={product.brand}
-            id={product.id}
-            price={product.price}
-            product={product.product}
-            key={i}
-          />
-        );
-      })}
-    </div>
+    <>
+      <div id={css.wrap}>
+        {data?.map((product: ProductType, i: number) => {
+          return (
+            <Product
+              brand={product.brand}
+              id={product.id}
+              price={product.price}
+              product={product.product}
+              key={i}
+            />
+          );
+        })}
+        {isLoading && (
+          <div id={css.loadWrap}>
+            <img id={css.img} src={loader} alt="loader" />
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

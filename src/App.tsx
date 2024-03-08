@@ -48,6 +48,7 @@ function App() {
         <LazyContent
           offset={offset}
           setOffset={setOffset}
+          isLoading={isLoading}
           setIsLoading={setIsLoading}
         />
       </Suspense>

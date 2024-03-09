@@ -1,5 +1,5 @@
 import { ChangeEventHandler, Dispatch, SetStateAction, useState } from "react";
-import css from "./FilterByName.module.css";
+import css from "./FilerByBrand.module.css";
 
 type t = {
   getFields: (action: string, params: unknown) => Promise<Response | undefined>;
@@ -7,7 +7,7 @@ type t = {
   isLoading: boolean;
 };
 
-const FilterByName: React.FC<t> = ({ getFields, setIDs, isLoading }) => {
+const FilerByBrand: React.FC<t> = ({ getFields, setIDs, isLoading }) => {
   const [inpValue, setinpValue] = useState<string>("");
 
   const handleChangeInput:
@@ -18,7 +18,7 @@ const FilterByName: React.FC<t> = ({ getFields, setIDs, isLoading }) => {
 
   const handleSearch = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    getFields("filter", { product: inpValue }).then(async (res) => {
+    getFields("filter", { brand: inpValue }).then(async (res) => {
       const d = await res?.json();
       const IDs = d.result;
 
@@ -42,10 +42,10 @@ const FilterByName: React.FC<t> = ({ getFields, setIDs, isLoading }) => {
         onChange={handleChangeInput}
       />
       <button disabled={isLoading} id={css.btn} type="submit">
-        Filter by Name
+        Filter by Brand
       </button>
     </form>
   );
 };
 
-export default FilterByName;
+export default FilerByBrand;

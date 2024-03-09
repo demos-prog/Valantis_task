@@ -1,11 +1,15 @@
 import React, { Suspense, useCallback, useState } from "react";
 import md5 from "md5";
 import FilterByName from "./components/FilterByName/FilterByName.tsx";
+import FilterByPrice from "./components/FilterByPrice/FilterByPrice.tsx";
+import FilerByBrand from "./components/FilerByBrand/FilerByBrand.tsx";
 import css from "./App.module.css";
 
 const LazyContent = React.lazy(
   () => import("./components/Content/Content.tsx")
 );
+
+const URL = "https://api.valantis.store:41000/";
 
 function App() {
   const [offset, setOffset] = useState(0);
@@ -13,10 +17,11 @@ function App() {
   const [IDs, setIDs] = useState([]);
 
   const getFields = useCallback(async (action: string, params: unknown) => {
+    setIsLoading(true);
     const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 
     try {
-      const response = await fetch("https://api.valantis.store:41000/", {
+      const response = await fetch(URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,8 +32,13 @@ function App() {
           params: params,
         }),
       });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      setIsLoading(false);
       return response;
     } catch (error) {
+      setIsLoading(false);
       console.log("There was an error", error);
     }
   }, []);
@@ -69,7 +79,9 @@ function App() {
         </div>
 
         <div id={css.filters}>
-          <FilterByName getFields={getFields} setIDs={setIDs} />
+          <FilterByName isLoading={isLoading} getFields={getFields} setIDs={setIDs} />
+          <FilterByPrice isLoading={isLoading} getFields={getFields} setIDs={setIDs} />
+          <FilerByBrand isLoading={isLoading} getFields={getFields} setIDs={setIDs} />
         </div>
       </div>
       <Suspense fallback={"Loading..."}>
@@ -77,6 +89,7 @@ function App() {
           IDs={IDs}
           setIDs={setIDs}
           offset={offset}
+          URL={URL}
           isLoading={isLoading}
           setIsLoading={setIsLoading}
         />

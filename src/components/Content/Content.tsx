@@ -15,6 +15,7 @@ type ContentProps = {
   isLoading: boolean;
   setIsLoading: (value: boolean) => void;
   IDs: string[];
+  URL:string;
   setIDs: Dispatch<SetStateAction<never[]>>;
 };
 
@@ -24,6 +25,7 @@ const Content: React.FC<ContentProps> = ({
   offset,
   isLoading,
   setIsLoading,
+  URL,
 }) => {
   const [data, setData] = useState([]);
 
@@ -33,7 +35,7 @@ const Content: React.FC<ContentProps> = ({
       const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 
       try {
-        const response = await fetch("http://api.valantis.store:40000/", {
+        const response = await fetch(URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

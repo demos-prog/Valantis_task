@@ -1,5 +1,5 @@
 import { ChangeEventHandler, Dispatch, SetStateAction, useState } from "react";
-import css from "./FilterByName.module.css";
+import css from "./FilterByPrice.module.css";
 
 type t = {
   getFields: (action: string, params: unknown) => Promise<Response | undefined>;
@@ -7,18 +7,21 @@ type t = {
   isLoading: boolean;
 };
 
-const FilterByName: React.FC<t> = ({ getFields, setIDs, isLoading }) => {
-  const [inpValue, setinpValue] = useState<string>("");
+const FilterByPrice: React.FC<t> = ({ getFields, setIDs, isLoading }) => {
+  const [inpValue, setinpValue] = useState<number>(0);
 
   const handleChangeInput:
     | ChangeEventHandler<HTMLInputElement>
     | undefined = (e: { target: { value: SetStateAction<string> } }) => {
-    setinpValue(e.target.value);
+    const price = +e.target.value;
+    if (price > 0) {
+      setinpValue(+e.target.value);
+    }
   };
 
   const handleSearch = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    getFields("filter", { product: inpValue }).then(async (res) => {
+    getFields("filter", { price: inpValue }).then(async (res) => {
       const d = await res?.json();
       const IDs = d.result;
 
@@ -33,8 +36,8 @@ const FilterByName: React.FC<t> = ({ getFields, setIDs, isLoading }) => {
   return (
     <form className={css.form} onSubmit={handleSearch}>
       <input
-        disabled={isLoading}
-        type="text"
+      disabled={isLoading}
+        type="number"
         name=""
         className={css.inp}
         title="nameInput"
@@ -42,10 +45,10 @@ const FilterByName: React.FC<t> = ({ getFields, setIDs, isLoading }) => {
         onChange={handleChangeInput}
       />
       <button disabled={isLoading} id={css.btn} type="submit">
-        Filter by Name
+        Filter by Price
       </button>
     </form>
   );
 };
 
-export default FilterByName;
+export default FilterByPrice;

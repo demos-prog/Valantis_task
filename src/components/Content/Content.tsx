@@ -44,9 +44,15 @@ const Content: React.FC<ContentProps> = ({
             params: params,
           }),
         });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
         return response;
       } catch (error) {
         console.log("There was an error", error);
+        window.location.reload();
       }
     },
     [setIsLoading]

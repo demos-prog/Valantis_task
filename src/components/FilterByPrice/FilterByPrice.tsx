@@ -25,7 +25,7 @@ const FilterByPrice: React.FC<t> = ({ getFields, setIDs, isLoading }) => {
       const d = await res?.json();
       const IDs = d.result;
 
-      if (IDs.length > 0) {
+      if (IDs.length >= 0) {
         setIDs(IDs);
       } else {
         alert("Nothing was found");

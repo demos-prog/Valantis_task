@@ -1,13 +1,39 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useCallback, useState } from "react";
+import md5 from "md5";
 import css from "./App.module.css";
 
 const LazyContent = React.lazy(
   () => import("./components/Content/Content.tsx")
 );
+const LazyFilterByName = React.lazy(
+  () => import("./components/FilterByName/FilterByName.tsx")
+);
 
 function App() {
   const [offset, setOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [IDs, setIDs] = useState([]);
+
+  const getFields = useCallback(async (action: string, params: unknown) => {
+    const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+
+    try {
+      const response = await fetch("https://api.valantis.store:41000/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth": md5(`Valantis_${timestamp}`),
+        },
+        body: JSON.stringify({
+          action: action,
+          params: params,
+        }),
+      });
+      return response;
+    } catch (error) {
+      console.log("There was an error", error);
+    }
+  }, []);
 
   const nextPage = () => {
     setOffset((prev) => prev + 50);
@@ -21,9 +47,10 @@ function App() {
 
   const isDisabledPrev = offset < 50 || isLoading;
 
+
   return (
     <>
-      <header>
+      <div id={css.head}>
         <div id={css.paginWr}>
           <button
             disabled={isDisabledPrev}
@@ -43,11 +70,18 @@ function App() {
             Next
           </button>
         </div>
-      </header>
+
+        <div id={css.filters}>
+          <Suspense fallback={null}>
+            <LazyFilterByName getFields={getFields} setIDs={setIDs} />
+          </Suspense>
+        </div>
+      </div>
       <Suspense fallback={"Loading..."}>
         <LazyContent
+          IDs={IDs}
+          setIDs={setIDs}
           offset={offset}
-          setOffset={setOffset}
           isLoading={isLoading}
           setIsLoading={setIsLoading}
         />

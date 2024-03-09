@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import md5 from "md5";
 import Product, { ProductType } from "../Product/Product.tsx";
 import loader from "../../assets/Eclipse-1s-200px.svg";
@@ -6,18 +12,19 @@ import css from "./Content.module.css";
 
 type ContentProps = {
   offset: number;
-  setOffset: (value: number) => void;
   isLoading: boolean;
   setIsLoading: (value: boolean) => void;
+  IDs: string[];
+  setIDs: Dispatch<SetStateAction<never[]>>;
 };
 
 const Content: React.FC<ContentProps> = ({
+  IDs,
+  setIDs,
   offset,
-  setOffset,
   isLoading,
   setIsLoading,
 }) => {
-  const [IDs, setIDs] = useState([]);
   const [data, setData] = useState([]);
 
   const getData = useCallback(
@@ -26,7 +33,7 @@ const Content: React.FC<ContentProps> = ({
       const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 
       try {
-        const response = await fetch("https://api.valantis.store:41000/", {
+        const response = await fetch("http://api.valantis.store:40000/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -39,27 +46,28 @@ const Content: React.FC<ContentProps> = ({
         });
         return response;
       } catch (error) {
-        setOffset(offset + 50);
         console.log("There was an error", error);
       }
     },
-    [offset, setIsLoading, setOffset]
+    [setIsLoading]
   );
 
   useEffect(() => {
-    getData("get_ids", { offset: offset, limit: 50 })
-      .then(async (res) => {
-        const d = await res?.json();
-        setIDs(d.result);
-      })
-      .then(() => {
-        getData("get_items", { ids: IDs }).then(async (res) => {
-          const d = await res?.json();
-          setData(d.result);
-          setIsLoading(false);
-        });
-      });
-  }, [IDs, getData, offset, setIsLoading]);
+    getData("get_ids", { offset: offset, limit: 50 }).then(async (res) => {
+      const d = await res?.json();
+      setIDs(d.result);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offset]);
+
+  useEffect(() => {
+    getData("get_items", { ids: IDs }).then(async (res) => {
+      const d = await res?.json();
+      setData(d.result);
+      setIsLoading(false);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [IDs]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-header{
+#head{
   z-index: 100;
   display: flex;
   background: white;
@@ -29,4 +29,11 @@ header{
   align-items: center;
   display: flex;
   gap: 20px;
+}
+
+#filters{
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: min-content;
 }

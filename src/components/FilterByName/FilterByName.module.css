@@ -1,3 +1,17 @@
+.form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.filtWrap{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
 .inp {
   padding: 5px;
   border: 1px solid #000;

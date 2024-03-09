@@ -1,12 +1,10 @@
 import React, { Suspense, useCallback, useState } from "react";
 import md5 from "md5";
+import FilterByName from "./components/FilterByName/FilterByName.tsx";
 import css from "./App.module.css";
 
 const LazyContent = React.lazy(
   () => import("./components/Content/Content.tsx")
-);
-const LazyFilterByName = React.lazy(
-  () => import("./components/FilterByName/FilterByName.tsx")
 );
 
 function App() {
@@ -47,7 +45,6 @@ function App() {
 
   const isDisabledPrev = offset < 50 || isLoading;
 
-
   return (
     <>
       <div id={css.head}>
@@ -72,9 +69,7 @@ function App() {
         </div>
 
         <div id={css.filters}>
-          <Suspense fallback={null}>
-            <LazyFilterByName getFields={getFields} setIDs={setIDs} />
-          </Suspense>
+          <FilterByName getFields={getFields} setIDs={setIDs} />
         </div>
       </div>
       <Suspense fallback={"Loading..."}>

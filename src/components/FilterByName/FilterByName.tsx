@@ -15,7 +15,7 @@ const FilterByName: React.FC<t> = ({ getFields, setIDs }) => {
     setinpValue(e.target.value);
   };
 
-  const handleSearch = (e: { preventDefault: () => void; }) => {
+  const handleSearch = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     getFields("filter", { product: inpValue }).then(async (res) => {
       const d = await res?.json();
@@ -30,21 +30,19 @@ const FilterByName: React.FC<t> = ({ getFields, setIDs }) => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSearch}>
-        <input
-          type="text"
-          name=""
-          className={css.inp}
-          title="nameInput"
-          value={inpValue}
-          onChange={handleChangeInput}
-        />
-        <button id={css.btn} type="submit">
-          Filter by name
-        </button>
-      </form>
-    </div>
+    <form className={css.form} onSubmit={handleSearch}>
+      <input
+        type="text"
+        name=""
+        className={css.inp}
+        title="nameInput"
+        value={inpValue}
+        onChange={handleChangeInput}
+      />
+      <button id={css.btn} type="submit">
+        Filter by name
+      </button>
+    </form>
   );
 };
 
